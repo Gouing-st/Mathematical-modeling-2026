@@ -12,7 +12,7 @@
 %  作者: Claude (Anthropic)
 %  日期: 2026-05-22
 
-clear; clc; close all;
+
 
 %% 1. 定义各典型环节
 s = tf('s');
@@ -53,5 +53,3 @@ bode(G);
 grid on;
 title({'开环传递函数 Bode 图'; ...
        'G(s) = 10(s+1) / [s(s+5)(s^2+2s+4)]'}, 'FontSize', 13);
-tranimate(rotx(pi/2), 'movie');       % 绕X轴旋转动画
-tranimate(rotx(pi/2)*roty(pi/2));     % 复合旋转动画
