@@ -225,13 +225,18 @@ function X_poly = poly_features(X)
 % Generate degree-2 polynomial features (no bias term)
 % Input:  X [m x n]
 % Output: X_poly [m x (n + n*(n+1)/2)]
-[m, n] = size(X);
+[~, n] = size(X);
 X_poly = X;  % linear terms
+n_cross = n * (n + 1) / 2;
+X_cross = zeros(size(X,1), n_cross);
+k = 0;
 for i = 1:n
     for j = i:n
-        X_poly = [X_poly, X(:,i) .* X(:,j)];
+        k = k + 1;
+        X_cross(:,k) = X(:,i) .* X(:,j);
     end
 end
+X_poly = [X_poly, X_cross];
 end
 
 function val = soft_threshold(rho, lambda)
