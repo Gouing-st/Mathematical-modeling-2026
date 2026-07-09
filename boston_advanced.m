@@ -13,7 +13,7 @@ end
 data = readtable(fullfile(fpath, fname));
 
 feature_names = {'CRIM','ZN','INDUS','CHAS','NOX','RM', ...
-                 'AGE','DIS','RAD','TAX','PTRATIO','B','LSTAT'};
+    'AGE','DIS','RAD','TAX','PTRATIO','B','LSTAT'};
 
 X_raw = table2array(data(:, feature_names));
 y     = table2array(data(:, 'MEDV'));
@@ -34,6 +34,8 @@ mu_poly    = mean(X_poly);
 sigma_poly = std(X_poly);
 sigma_poly(sigma_poly == 0) = 1;  % avoid division by zero
 X_poly_norm = (X_poly - mu_poly) ./ sigma_poly;
+
+%% -- 4.1. Visualize Feature Distributions --
 
 %% -- 4. Train / Test Split (80% / 20%) --
 rng(42);
@@ -223,31 +225,31 @@ function X_poly = poly_features(X)
 % Generate degree-2 polynomial features (no bias term)
 % Input:  X [m x n]
 % Output: X_poly [m x (n + n*(n+1)/2)]
-    [m, n] = size(X);
-    X_poly = X;  % linear terms
-    for i = 1:n
-        for j = i:n
-            X_poly = [X_poly, X(:,i) .* X(:,j)];
-        end
+[m, n] = size(X);
+X_poly = X;  % linear terms
+for i = 1:n
+    for j = i:n
+        X_poly = [X_poly, X(:,i) .* X(:,j)];
     end
+end
 end
 
 function val = soft_threshold(rho, lambda)
 % Soft-threshold operator for Lasso coordinate descent
-    if rho > lambda
-        val = rho - lambda;
-    elseif rho < -lambda
-        val = rho + lambda;
-    else
-        val = 0;
-    end
+if rho > lambda
+    val = rho - lambda;
+elseif rho < -lambda
+    val = rho + lambda;
+else
+    val = 0;
+end
 end
 
 function [r2, rmse] = eval_model(X, y, theta)
 % Compute R2 and RMSE given design matrix X, labels y, params theta
-    y_hat  = X * theta;
-    ss_res = sum((y - y_hat).^2);
-    ss_tot = sum((y - mean(y)).^2);
-    r2     = 1 - ss_res / ss_tot;
-    rmse   = sqrt(mean((y - y_hat).^2));
+y_hat  = X * theta;
+ss_res = sum((y - y_hat).^2);
+ss_tot = sum((y - mean(y)).^2);
+r2     = 1 - ss_res / ss_tot;
+rmse   = sqrt(mean((y - y_hat).^2));
 end
